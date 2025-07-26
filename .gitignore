@@ -235,3 +235,5 @@ __marimo__/
 # images
 .png
 .svg
+
+notebooks/
