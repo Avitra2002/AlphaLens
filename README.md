@@ -1,8 +1,8 @@
 # 🔍 AlphaLens – Smart Investment Research Assistant
+> 🚧 **Project Status: Still Under Development**
 
 **AlphaLens** is an AI-powered research assistant designed to supercharge institutional-grade investment analysis. It combines real-time macroeconomic insights, intelligent document analysis, and powerful knowledge graph visualizations—driven by local and cloud-based LLMs.
 
----
 
 ## 🚀 What It Does
 
