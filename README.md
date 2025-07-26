@@ -13,7 +13,6 @@
 
   > *"High inflation in Argentina → Fixed income likely to outperform equities."*
 
----
 
 ### 🧠 2. Entity Intelligence Module (**InsightVault**)
 - Ingests structured and unstructured data (e.g., 10-Ks, news, press releases).
@@ -22,7 +21,6 @@
 
   > *"BlackRock → invested in → Company XYZ."*
 
----
 
 ### 💬 3. LLM Chatbot Interface
 Ask investment-grade queries like:
@@ -30,7 +28,6 @@ Ask investment-grade queries like:
 - *“Which firms are most connected to Temasek in 2023?”*
 - *“What sectors are most exposed to China’s slowdown?”*
 
----
 
 ## 🧱 Tech Stack
 
@@ -79,7 +76,6 @@ Ask investment-grade queries like:
 ### 📦 Containerization
 - Dockerized backend and LangChain/LLM modules
 
----
 
 ## 🛠️ Setup Instructions (Coming Soon)
 This section will contain:
@@ -87,13 +83,11 @@ This section will contain:
 - ⚙️ `.env` configuration
 - 🧪 Developer and contribution guidelines
 
----
 
 ## 📄 License
 
 MIT License *(or add your preferred license)*
 
----
 
 ## 🤝 Contributions
 
