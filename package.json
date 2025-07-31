@@ -1,0 +1,14 @@
+{
+  "name": "alpha-lens",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:next\" \"npm run dev:node\"",
+    "dev:next": "cd ./frontend && npm run dev",
+    "dev:node": "cd ./backend_nodeJS && npm run dev",
+    "dev:fastapi": "cd ./data_fetch && ./.venv/bin/uvicorn app.main:app --reload --port 8000"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.0",
+    "uvicorn": "^0.0.1-security"
+  }
+}

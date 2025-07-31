@@ -9,27 +9,41 @@ function analyzeTrend(data) {
   return "Remained stable.";
 }
 
-function detectAnomalies(data, threshold = 2.0) {
-  const df = new dfd.DataFrame(data);
-  const diffs = df['value'].values.map((v, i, arr) => i === 0 ? 0 : Math.abs(v - arr[i - 1]));
-  return data
-    .map((d, i) => diffs[i] > threshold ? `Year ${d.year}: ${diffs[i].toFixed(2)} change` : null)
-    .filter(Boolean);
+const {INDICATOR_THRESHOLDS} = require ('../utils/indicators')
+
+function detectAnomalies(data, code) {
+  const anomalies = [];
+  const threshold = INDICATOR_THRESHOLDS[code] || 10; // Default to 10% if not defined
+
+  for (let i = 1; i < data.length; i++) {
+    const prev = data[i - 1].value;
+    const curr = data[i].value;
+
+    if (prev == null || curr == null) continue;
+
+    const percentChange = Math.abs((curr - prev) / prev) * 100;
+
+    if (percentChange > threshold) {
+      anomalies.push(`Year ${data[i].year}: ${percentChange.toFixed(2)}% change`);
+    }
+  }
+
+  return anomalies;
 }
 
-async function getCountrySummaryTrends(country, start, end) {
-  const rawData = await fetchAll(country, start, end);
+async function getCountrySummaryTrends(country, start, end, indicators) {
+  const rawData = await fetchAll(country, start, end, indicators);
   const summary = {};
 
   for (let [key, data] of Object.entries(rawData)) {
     summary[key] = {
       data,
       trend: analyzeTrend(data),
-      anomalies: detectAnomalies(data)
+      anomalies: detectAnomalies(data, key)
     };
   }
 
   return { country, start, end, indicators: summary };
 }
 
-module.exports = { getCountrySummary };
+module.exports = { getCountrySummaryTrends };
