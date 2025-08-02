@@ -2,8 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { TrendingUp, TrendingDown, BarChart3, Globe, Calendar, Activity, AlertTriangle } from "lucide-react";
-
-// Import your actual IndicatorChart component
 import IndicatorChart from '../../components/IndicatorChart';
 
 type IndicatorDataPoint = {
@@ -55,7 +53,6 @@ export default function TrendsAIPage() {
 
   useEffect(() => {
     fetchCountries();
-    // Initial fetch with default values
     fetchSummary();
   }, []);
 
