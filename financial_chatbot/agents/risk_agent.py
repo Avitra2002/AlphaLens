@@ -18,6 +18,9 @@ class RiskAgent(BaseAgent):
                 prompt = f"Summarize the following risk factors:\n\n{chunk['text']}"
                 summaries.append(self.gemini.generate_response(prompt))
 
+        if not summaries:
+            return f"No usable text found in sections {sections} for {company_data.get('company_name')}"
+
         summarized_text = "\n".join(summaries)
         return self.analyze(query, company_data, summarized_text)
 

@@ -26,7 +26,7 @@ INTENTS = [
 
 INTENT_SECTIONS = {
     "financial_status": ['7', '8'],
-    "relationship_graph": ['1', '2'],
+    "relationship_graph": ["1", "1A", "7", "8"],
     "risk_analysis": ['1A'],
     "general_summary": ['1', '7']
 }
@@ -51,3 +51,7 @@ ROUTER_DESTINATIONS = [
         "description": "Good for general questions about companies and broad business overviews"
     }
 ]
+#neo4j config
+NEO4J_URI= os.getenv("NEO4J_URI")
+NEO4J_USERNAME=os.getenv("NEO4J_USERNAME")
+NEO4J_PASSWORD=os.getenv("NEO4J_PASSWORD")

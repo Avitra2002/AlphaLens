@@ -20,6 +20,9 @@ class FinancialAgent(BaseAgent):
             prompt = f"Summarize the following financial discussion:\n\n{chunk['text']}"
             summaries.append(self.gemini.generate_response(prompt))
 
+        if not summaries:
+            return f"No usable text found in sections {sections} for {company_data.get('company_name')}"
+        
         combined_summary = "\n".join(summaries)
         return self.analyze(query, company_data, combined_summary)
     

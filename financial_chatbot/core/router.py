@@ -19,6 +19,7 @@ class Router:
         self.extractor_api = ExtractorApi()
         self.vector_store = LocalFAISS()
 
+
     def process_query(self, query: str) -> str:
         # Step 1: Extract company info
         entity_info = self.entity_extractor.extract_company_info(query)
@@ -48,17 +49,28 @@ class Router:
         filing_year = filing_date[:4]
         namespace = f"{company_data['ticker']}_{filing_year}_10k"
 
-        # Step 4: Check FAISS cache
-        if not self.vector_store.exists(namespace):
+        # Step 4: Check FAISS cache & required sections
+        missing_sections = []
+        if self.vector_store.exists(namespace):
+            print(f"FAISS index exists for {namespace}. Checking required sections...")
+            existing_sections = self.vector_store.list_sections(namespace)
+            for sec in sections:
+                if str(sec) not in existing_sections:
+                    missing_sections.append(sec)
+            print (f"missing sections:{missing_sections}")
+        else:
             print(f"No FAISS index found for {namespace}. Creating new one...")
+            missing_sections = sections
 
-            filing_url = filings['filings'][0].get('linkToFilingDetails')
+        # Step 5: Fetch and store missing sections if any
+        if missing_sections:
+            filing_url = latest_filing.get('linkToFilingDetails')
             if not filing_url:
                 return f"Filing URL not found for {company_data.get('company_name')}."
 
             filing_chunks = []
-            for section in sections:
-                print("fetching from sec api")
+            for section in missing_sections:
+                print(f"Fetching section {section} from SEC API...")
                 section_text = self.extractor_api.extract_section(filing_url, section)
                 if section_text:
                     for chunk_id, chunk in enumerate(chunk_text(section_text, size=2500, overlap=200)):
@@ -71,14 +83,34 @@ class Router:
                                 "chunk_id": chunk_id
                             }
                         })
-            if not filing_chunks:
-                return f"No relevant sections found in the latest 10-K for {company_data.get('company_name')}."
-            self.vector_store.create(namespace, filing_chunks)
+
+            if filing_chunks:
+                if self.vector_store.exists(namespace):
+                    self.vector_store.add_chunks(namespace, filing_chunks)
+                else:
+                    self.vector_store.create(namespace, filing_chunks)
+            else:
+                logging.warning(f"No data fetched for sections {missing_sections} in {company_data.get('company_name')}.")
         else:
-            print(f"FAISS index already exists for {namespace}. Using cache.")
+            print(f"All required sections already exist for {namespace}.")
 
 
         # Step 5: Route to appropriate agent
         agent = self.langchain_router.get_agent_for_intent(intent)
         # return agent.analyze(query, company_data, context)
-        return agent.retrieve_and_analyze(query, company_data, namespace, self.vector_store)
+        raw_results = agent.retrieve_and_analyze(query, company_data, namespace, self.vector_store)
+
+        if isinstance(raw_results, dict) and "relationships" in raw_results:
+            data_type = "graph"
+        elif isinstance(raw_results, str):
+            data_type = "text"
+        else:
+            data_type = "unknown"
+        
+        return {
+            "intent": intent,
+            "company": company_data.get("company_name"),
+            "data": raw_results,
+            "data_type": data_type,
+            "success": True if raw_results else False
+        }

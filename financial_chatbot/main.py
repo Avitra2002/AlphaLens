@@ -1,43 +1,28 @@
+from fastapi import FastAPI, Query
+from pydantic import BaseModel
+from typing import Any
 from core.router import Router
-import logging
+# uvicorn main:app --reload --port 8001
+router_instance = Router()
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s'
+app = FastAPI(
+    title="Financial Analysis API",
+    description="Ask questions about public companies' financials, risks, and relationships",
+    version="1.0.0"
 )
 
-def main():
-    """Main application entry point"""
-    router = Router()
-    
-    print("Financial Analysis System")
-    print("=" * 40)
-    print("Ask questions about public companies!")
-    print("Type 'quit' to exit\n")
-    
-    while True:
-        try:
-            query = input("Your question: ").strip()
-            
-            if query.lower() in ['quit', 'exit', 'q']:
-                print("Goodbye!")
-                break
-                
-            if not query:
-                continue
-                
-            print("\nAnalyzing...")
-            response = router.process_query(query)
-            print(f"\nResponse:\n{response}\n")
-            print("-" * 40)
-            
-        except KeyboardInterrupt:
-            print("\nGoodbye!")
-            break
-        except Exception as e:
-            print(f"Error: {e}")
-            logging.error(f"Main loop error: {e}")
+class QueryRequest(BaseModel):
+    query: str
 
-if __name__ == "__main__":
-    main()
+class QueryResponse(BaseModel):
+    intent: str
+    company: str
+    data: Any
+    data_type: str
+    success: bool
+
+@app.post("/finance_chatbot", response_model=QueryResponse)
+def analyze_query(request: QueryRequest):
+    """Analyze a company question and return structured response."""
+    result = router_instance.process_query(request.query)
+    return result
