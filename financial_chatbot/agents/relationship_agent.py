@@ -1,6 +1,12 @@
 from agents.base_agent import BaseAgent
 
 class RelationshipAgent(BaseAgent):
+    def retrieve_and_analyze(self, query, company_data, namespace, vector_store):
+        # Get top-K relevant chunks
+        retrieved_chunks = vector_store.search(namespace, query, top_k=8)
+        context = "\n\n".join([c["text"] for c in retrieved_chunks])
+        return self.analyze(query, company_data, context)
+    
     def analyze(self, query: str, company_data: dict, filing_data: str) -> str:
         """Analyze company relationships"""
         

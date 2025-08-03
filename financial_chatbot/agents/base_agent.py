@@ -13,3 +13,7 @@ class BaseAgent(ABC):
     def _create_prompt(self, template: str, **kwargs) -> str:
         
         return template.format(**kwargs)
+    
+    @abstractmethod
+    def retrieve_and_analyze(self, query: str, company_data: dict, namespace: str, vector_store):
+        pass

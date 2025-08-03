@@ -10,10 +10,10 @@ qa = QueryApi()
 print("With CIK")
 print(qa.get_filings({"cik": "320193"}))
 
-# With ticker
-print("\nWith Ticker")
-print(qa.get_filings({"ticker": "AAPL"}))
+# # With ticker
+# print("\nWith Ticker")
+# print(qa.get_filings({"ticker": "AAPL"}))
 
-# With company name
-print("\nWith Company Name")
-print(qa.get_filings({"company_name": "Apple"}))
+# # With company name
+# print("\nWith Company Name")
+# print(qa.get_filings({"company_name": "Apple"}))

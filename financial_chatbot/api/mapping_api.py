@@ -56,7 +56,7 @@ class MappingApi:
             if entry.get("ticker") == ticker_upper:
                 return {
                     "ticker": ticker_upper,
-                    "cik": str(entry.get("cik_str")).zfill(10),  # pad for EDGAR
+                    "cik": str(entry.get("cik_str")).lstrip("0"),
                     "company_name": entry.get("title")
                 }
         return None
@@ -80,7 +80,7 @@ class MappingApi:
                 match = data[0]
                 return {
                     'ticker': match.get('ticker'),
-                    'cik': match.get('cik'),
+                    'cik': str(match.get('cik')).lstrip("0"),
                     'company_name': match.get('name')
                 }
 
