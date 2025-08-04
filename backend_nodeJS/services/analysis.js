@@ -13,7 +13,7 @@ const {INDICATOR_THRESHOLDS} = require ('../utils/indicators')
 
 function detectAnomalies(data, code) {
   const anomalies = [];
-  const threshold = INDICATOR_THRESHOLDS[code] || 10; // Default to 10% if not defined
+  const threshold = INDICATOR_THRESHOLDS[code] || 10;
 
   for (let i = 1; i < data.length; i++) {
     const prev = data[i - 1].value;

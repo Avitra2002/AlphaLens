@@ -99,7 +99,7 @@ def extract_relationships_gemini(query, sentences: List[str], company_name: str)
                         e2 = normalize_company_name(rel.get("entity2", ""))
 
                         # Skip generic placeholder entities
-                        if is_generic_entity(e1) or is_generic_entity(e2):
+                        if not e1 or not e2 or is_generic_entity(e1) or is_generic_entity(e2):
                             continue
 
                         relationships.append(
